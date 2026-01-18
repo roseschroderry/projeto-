@@ -14,8 +14,9 @@ const AUTH_STATE = {
 // ==================== VALIDAÇÃO ====================
 class ValidationService {
   static validateEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    // Regex mais robusto para validação de email
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    return emailRegex.test(email) && email.length >= 5 && email.length <= 254;
   }
 
   static validatePassword(password) {
@@ -112,6 +113,7 @@ class UIManager {
   static switchTab(tabName) {
     // Esconde todas as abas
     document.querySelectorAll('[data-tab]').forEach(tab => {
+      tab.classList.remove('active');
       tab.style.display = 'none';
     });
 
@@ -123,25 +125,29 @@ class UIManager {
     // Mostra aba selecionada
     const selectedTab = document.querySelector(`[data-tab="${tabName}"]`);
     if (selectedTab) {
+      selectedTab.classList.add('active');
       selectedTab.style.display = 'block';
     }
 
     // Marca botão como ativo
-    event.target.classList.add('active');
+    const activeBtn = document.querySelector(`[data-tab-target="${tabName}"]`);
+    if (activeBtn) {
+      activeBtn.classList.add('active');
+    }
   }
 
-  static togglePasswordVisibility(inputId) {
+  static togglePasswordVisibility(inputId, iconElement) {
     const input = document.getElementById(inputId);
-    const icon = event.target;
+    if (!input || !iconElement) return;
 
     if (input.type === 'password') {
       input.type = 'text';
-      icon.classList.remove('fa-eye');
-      icon.classList.add('fa-eye-slash');
+      iconElement.classList.remove('fa-eye');
+      iconElement.classList.add('fa-eye-slash');
     } else {
       input.type = 'password';
-      icon.classList.remove('fa-eye-slash');
-      icon.classList.add('fa-eye');
+      iconElement.classList.remove('fa-eye-slash');
+      iconElement.classList.add('fa-eye');
     }
   }
 
@@ -183,7 +189,9 @@ class AuthService {
 
       AUTH_STATE.isAuthenticated = true;
       AUTH_STATE.user = {
-        email: email,
+        email: response.user.email,
+        name: response.user.name,
+        role: response.user.role,
         user_id: response.user_id,
       };
       AUTH_STATE.tokens = {
@@ -204,12 +212,13 @@ class AuthService {
       
       // Redireciona após 1s
       setTimeout(() => {
-        window.location.href = '/dashboard.html';
+        window.location.href = '/admin-dashboard/index.html';
       }, 1000);
 
       return true;
     } catch (error) {
-      UIManager.showError(error.response?.data?.detail || 'Erro ao fazer login');
+      const errorMessage = error.response?.data?.detail || error.message || 'Erro ao fazer login';
+      UIManager.showError(errorMessage);
       return false;
     } finally {
       UIManager.showLoadingSpinner(false);
@@ -247,7 +256,24 @@ class AuthService {
 
       const response = await API_CLIENT.register(email, password, name);
 
-      UIManager.showSuccess('Cadastro realizado! Faça login com suas credenciais.');
+      UIManager.showSuccess(response.message || 'Cadastro realizado! Faça login com suas credenciais.');
+      
+      // Limpa formulário e volta à aba de login
+      setTimeout(() => {
+        UIManager.clearForm('register-form');
+        const loginTab = document.querySelector('[data-tab-target="login"]');
+        if (loginTab) loginTab.click();
+      }, 1500);
+
+      return true;
+    } catch (error) {
+      const errorMessage = error.response?.data?.detail || error.message || 'Erro ao registrar';
+      UIManager.showError(errorMessage);
+      return false;
+    } finally {
+      UIManager.showLoadingSpinner(false);
+    }
+  }
       
       // Limpa formulário e volta à aba de login
       setTimeout(() => {
@@ -410,7 +436,8 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const inputId = btn.getAttribute('data-toggle');
-      UIManager.togglePasswordVisibility(inputId);
+      const icon = btn.querySelector('i');
+      UIManager.togglePasswordVisibility(inputId, icon);
     });
   });
 

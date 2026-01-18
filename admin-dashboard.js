@@ -3,23 +3,70 @@
 
 class AdminDashboard {
     constructor() {
-        this.API_URL = window.location.hostname === 'localhost' 
-            ? 'http://localhost:3000' 
-            : 'https://chat-ai-backend-1.onrender.com';
+        // Usar configuração centralizada
+        this.API_URL = typeof CONFIG !== 'undefined' 
+            ? CONFIG.getBackendUrl() 
+            : (window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'https://chat-ai-backend-lox5.onrender.com');
         this.metrics = [];
         this.userRole = 'admin';
+        this.isLoading = false;
     }
 
     async init() {
-        await this.loadMetrics();
-        await this.loadUserRole();
-        this.render();
+        this.showLoading(true);
+        try {
+            await this.loadMetrics();
+            await this.loadUserRole();
+            this.render();
+        } catch (error) {
+            console.error('Erro ao inicializar dashboard:', error);
+            this.showError('Erro ao carregar dashboard');
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    showLoading(show) {
+        this.isLoading = show;
+        const container = document.getElementById('dashboardSection');
+        if (container && show) {
+            container.innerHTML = `
+                <div style="display: flex; justify-content: center; align-items: center; min-height: 400px;">
+                    <div style="text-align: center;">
+                        <div style="width: 50px; height: 50px; border: 4px solid #E5E7EB; border-top-color: #DC2626; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px;"></div>
+                        <p style="color: #64748B; font-size: 14px;">Carregando dashboard...</p>
+                    </div>
+                </div>
+                <style>
+                    @keyframes spin { to { transform: rotate(360deg); } }
+                </style>
+            `;
+        }
+    }
+
+    showError(message) {
+        const container = document.getElementById('dashboardSection');
+        if (container) {
+            container.innerHTML = `
+                <div style="padding: 24px;">
+                    <div style="background: #FEE2E2; border: 1px solid #FCA5A5; border-radius: 12px; padding: 20px; text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">⚠️</div>
+                        <p style="color: #DC2626; font-weight: 600; margin-bottom: 8px;">${message}</p>
+                        <button onclick="window.adminDashboard.init()" style="background: #DC2626; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-top: 8px;">Tentar Novamente</button>
+                    </div>
+                </div>
+            `;
+        }
     }
 
     async loadMetrics() {
         try {
             const token = localStorage.getItem('api_token');
-            if (!token) return;
+            if (!token) {
+                console.warn('⚠️ Token não encontrado, usando modo offline');
+                this.metrics = [];
+                return;
+            }
 
             // Carregar métricas da API
             const response = await fetch(`${this.API_URL}/api/metrics`, {
@@ -28,13 +75,33 @@ class AdminDashboard {
             
             if (response.ok) {
                 this.metrics = await response.json();
+            } else if (response.status === 401) {
+                console.warn('⚠️ Token expirado');
+                this.showWarning('Sessão expirada. Faça login novamente.');
+            } else {
+                console.warn('⚠️ Erro ao carregar métricas:', response.status);
             }
 
-            // NOVO: Carregar dados do Google Sheets
+            // Carregar dados do Google Sheets
             await this.loadSheetsData();
         } catch (error) {
-            console.error('Erro ao carregar métricas:', error);
+            console.error('❌ Erro ao carregar métricas:', error);
+            this.metrics = [];
         }
+    }
+
+    showWarning(message) {
+        const warning = document.createElement('div');
+        warning.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #FEF3C7; border: 1px solid #FCD34D; color: #92400E; padding: 16px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 9999; max-width: 300px; animation: slideIn 0.3s;';
+        warning.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 20px;">⚠️</span>
+                <span style="font-size: 14px; font-weight: 600;">${message}</span>
+            </div>
+            <style>@keyframes slideIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }</style>
+        `;
+        document.body.appendChild(warning);
+        setTimeout(() => warning.remove(), 5000);
     }
 
     async loadSheetsData() {
@@ -254,20 +321,12 @@ class AdminDashboard {
                             </div>
                             <div style="flex: 1;">
                                 <p style="font-size: 14px; color: #64748B; margin-bottom: 8px;">Upload de Arquivo</p>
-                                <input type="file" id="uploadInput" accept=".xlsx,.xls,.csv" 
-                                    style="display: none;">
-                                <button onclick="document.getElementById('uploadInput').click()" 
-                                    style="width: 100%; padding: 8px 16px; background: #DC2626; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500;">
+                                <input type="file" id="uploadInput" accept=".xlsx,.xls,.csv" style="display: none;">
+                                <button id="uploadBtn" style="width: 100%; padding: 8px 16px; background: #DC2626; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: background 0.3s;" onmouseover="this.style.background='#B91C1C'" onmouseout="this.style.background='#DC2626'">
                                     📎 Escolher Arquivo
                                 </button>
                                 <p id="fileName" style="font-size: 11px; color: #64748B; margin-top: 6px; min-height: 16px;"></p>
                             </div>
-                            <script>
-                                document.getElementById('uploadInput').addEventListener('change', function(e) {
-                                    const fileName = e.target.files[0]?.name || 'Nenhum arquivo selecionado';
-                                    document.getElementById('fileName').textContent = fileName;
-                                });
-                            </script>
                         </div>
                     </div>
                     ` : ''}
@@ -294,7 +353,7 @@ class AdminDashboard {
                         </div>
                     </div>
 
-                    ${!isVendedor ? `
+                    ${isAdmin ? `
                     <!-- Usuários Card -->
                     <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #E5E7EB;">
                         <div style="display: flex; align-items: center; gap: 16px;">
@@ -414,18 +473,37 @@ class AdminDashboard {
             </div>
         `;
 
-        // Adicionar event listener para upload
+        // Adicionar event listeners após renderização
+        this.attachEventListeners(isAdmin);
+    }
+
+    attachEventListeners(isAdmin) {
         if (isAdmin) {
+            // Event listener para botão de upload
+            const uploadBtn = document.getElementById('uploadBtn');
             const uploadInput = document.getElementById('uploadInput');
-            if (uploadInput) {
+            
+            if (uploadBtn && uploadInput) {
+                uploadBtn.addEventListener('click', () => {
+                    uploadInput.click();
+                });
+
                 uploadInput.addEventListener('change', (e) => {
                     const file = e.target.files[0];
-                    if (file) this.uploadFile(file);
+                    if (file) {
+                        const fileName = document.getElementById('fileName');
+                        if (fileName) {
+                            fileName.textContent = file.name;
+                        }
+                        this.uploadFile(file);
+                    }
                 });
             }
         }
     }
 }
 
-// Inicializar dashboard quando a página carregar
-window.adminDashboard = new AdminDashboard();
+// Inicializar dashboard quando a página carregar (usando namespace seguro)
+if (typeof window.adminDashboard === 'undefined') {
+    window.adminDashboard = new AdminDashboard();
+}

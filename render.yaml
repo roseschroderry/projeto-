@@ -8,10 +8,14 @@ services:
     runtime: python
     rootDir: backend
     buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    startCommand: uvicorn app_secure:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: SECRET_KEY
-        value: SECRET_EMPRESA_CHAT_AI_2025_PRODUCAO
+        generateValue: true
+      - key: ALLOWED_ORIGINS
+        value: "*"
+      - key: ENVIRONMENT
+        value: production
       - key: PYTHON_VERSION
         value: 3.11.0
     plan: free

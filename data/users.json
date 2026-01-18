@@ -1,0 +1,8 @@
+{
+  "admin@empresa.com": {
+    "password": "$2b$12$tge4CtLUJve2rPbFIu8ziugM5Psl5c6MVWDVD0/rNLQfmtE6Z4nra",
+    "role": "admin",
+    "name": "Administrador",
+    "created_at": "2026-01-18T02:42:16.400769"
+  }
+}

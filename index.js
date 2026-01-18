@@ -56,7 +56,7 @@ class APIClient {
   // ==================== AUTENTICAÇÃO ====================
   async register(email, password, name) {
     try {
-      const response = await this.client.post('/auth/register', {
+      const response = await this.client.post('/api/auth/register', {
         email,
         password,
         name,
@@ -71,10 +71,10 @@ class APIClient {
 
   async login(email, password, rememberMe = false) {
     try {
-      const response = await this.client.post('/auth/login', {
+      const response = await this.client.post('/api/auth/login', {
         email,
         password,
-        remember_me: rememberMe,
+        rememberMe: rememberMe,
       });
 
       this.accessToken = response.data.access_token;

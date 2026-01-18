@@ -420,12 +420,14 @@
                 placeholder="••••••••"
                 required
               />
-              <button class="toggle-password" data-toggle="register-password">
+              <button class="toggle-password" data-toggle="register-password" type="button">
                 <i class="fas fa-eye"></i>
               </button>
             </div>
-            <div id="password-strength"></div>
-            <small class="password-strength-text"></small>
+            <div style="margin-top: 8px;">
+              <div id="password-strength" class="password-strength-bar"></div>
+              <small id="password-strength-text" class="password-strength-text"></small>
+            </div>
             <div id="password-errors"></div>
           </div>
 
