@@ -16,11 +16,10 @@ const CONFIG = {
             PYTHON_API: 'http://localhost:8002'
         },
         production: {
-            // URLs serão atualizadas após deploy no Render
-            MAIN_BACKEND: 'https://chat-ai-backend.onrender.com',
-            API_SERVER: 'https://seu-api-server.onrender.com',
-            CHAT_IA: 'https://seu-chat-ia.onrender.com',
-            PYTHON_API: 'https://seu-python-api.onrender.com'
+            MAIN_BACKEND: 'https://chat-ai-backend-77ul.onrender.com',
+            API_SERVER: 'https://chat-ai-backend-77ul.onrender.com',
+            CHAT_IA: 'https://chat-ai-backend-77ul.onrender.com',
+            PYTHON_API: 'https://chat-ai-backend-77ul.onrender.com'
         }
     },
     
