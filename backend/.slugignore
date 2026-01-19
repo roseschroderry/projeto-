@@ -1,0 +1,43 @@
+# ⚙️ Configurações do Backend para Render
+# Este arquivo otimiza o deploy no Render.com
+
+# Ignorar arquivos desnecessários no deploy
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ambientes virtuais
+venv/
+env/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs e dados locais
+*.log
+data/logs.csv
+data/audit_logs.csv
+
+# Backups
+*.backup
+*.bak
+app.py.backup
