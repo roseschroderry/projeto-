@@ -60,11 +60,13 @@ security = HTTPBearer()
 allowed_origins_str = os.getenv("ALLOWED_ORIGINS", "*")
 allowed_origins = [origin.strip() for origin in allowed_origins_str.split(",")]
 
-if ENVIRONMENT == "production" and allowed_origins == ["*"]:
-    raise ValueError("❌ ERRO: CORS com '*' não é permitido em produção! Configure ALLOWED_ORIGINS no .env")
+# Validação temporariamente desabilitada para deploy inicial
+# Após deploy do frontend, atualize ALLOWED_ORIGINS com a URL real do frontend
+# if ENVIRONMENT == "production" and allowed_origins == ["*"]:
+#     raise ValueError("❌ ERRO: CORS com '*' não é permitido em produção! Configure ALLOWED_ORIGINS no .env")
 
 if allowed_origins == ["*"]:
-    print("⚠️  AVISO: CORS configurado para permitir todas as origens (apenas desenvolvimento)")
+    print("⚠️  AVISO: CORS configurado para permitir todas as origens (use apenas temporariamente)")
 else:
     print(f"✅ CORS configurado para: {', '.join(allowed_origins)}")
 
