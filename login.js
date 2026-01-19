@@ -212,7 +212,7 @@ class AuthService {
       
       // Redireciona após 1s
       setTimeout(() => {
-        window.location.href = '/admin-dashboard/index.html';
+        window.location.href = '/index.html';
       }, 1000);
 
       return true;
