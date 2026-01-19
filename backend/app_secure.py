@@ -606,18 +606,6 @@ def get_audit_logs(
         "logs": logs,
         "total": len(logs)
     }
-        raise HTTPException(401, "Senha antiga incorreta")
-    
-    # Atualizar senha
-    users[email]["password"] = hash_password(new_password)
-    users[email]["password_changed_at"] = datetime.now().isoformat()
-    
-    save_users(users)
-    
-    global USERS_DB
-    USERS_DB = users
-    
-    return {"message": "Senha alterada com sucesso"}
 
 # =========================
 # HISTÓRICO
