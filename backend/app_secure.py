@@ -189,7 +189,7 @@ def criar_token(email: str, role: str = "user", token_type: str = "access", reme
     if token_type == "refresh":
         expire_delta = timedelta(days=30 if remember_me else 7)
     else:
-        expire_delta = timedelta(days=30 if remember_me else minutes=TOKEN_EXPIRE_MIN)
+        expire_delta = timedelta(days=30) if remember_me else timedelta(minutes=TOKEN_EXPIRE_MIN)
     
     payload = {
         "sub": email,
