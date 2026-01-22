@@ -372,15 +372,39 @@ window.exportToExcel = function() {
 ================================================== */
 
 let chatHistory = [];
+let chatSettings = {
+    model: 'gpt-3.5-turbo',
+    temperature: 0.7,
+    apiKey: ''
+};
 
 function initChat() {
     const container = document.getElementById('chatContainer');
     if (!container) return;
     
     chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+    chatSettings = JSON.parse(localStorage.getItem('chatSettings') || JSON.stringify(chatSettings));
     
     container.innerHTML = `
         <div class="chat-wrapper">
+            <div class="chat-header-controls">
+                <div class="chat-controls-left">
+                    <button class="chat-control-btn" onclick="showChatSettings()" title="Configurações">
+                        ⚙️
+                    </button>
+                    <button class="chat-control-btn" onclick="exportChatHistory()" title="Exportar conversa">
+                        📥
+                    </button>
+                    <button class="chat-control-btn" onclick="clearChat()" title="Limpar chat">
+                        🗑️
+                    </button>
+                </div>
+                <div class="chat-model-indicator">
+                    <span class="model-badge">${chatSettings.model}</span>
+                    <span class="temp-badge">Temp: ${chatSettings.temperature}</span>
+                </div>
+            </div>
+            
             <div class="chat-messages" id="chatMessages">
                 ${chatHistory.length === 0 ? `
                     <div class="chat-welcome">
@@ -413,6 +437,57 @@ function initChat() {
                 <button class="chat-send-btn" onclick="sendMessage()">
                     <span>📤</span>
                 </button>
+            </div>
+        </div>
+        
+        <!-- Modal de Configurações -->
+        <div class="chat-settings-modal" id="chatSettingsModal" style="display: none;">
+            <div class="chat-settings-content">
+                <div class="chat-settings-header">
+                    <h3>⚙️ Configurações do Chat</h3>
+                    <button class="close-btn" onclick="closeChatSettings()">×</button>
+                </div>
+                <div class="chat-settings-body">
+                    <div class="setting-group">
+                        <label class="setting-label">🔑 Chave API (Opcional)</label>
+                        <input 
+                            type="password" 
+                            class="setting-input" 
+                            id="apiKeyInput" 
+                            placeholder="sk-..." 
+                            value="${chatSettings.apiKey}"
+                        >
+                        <small class="setting-hint">Para usar GPT-4 real, configure sua chave OpenAI</small>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label class="setting-label">🤖 Modelo de IA</label>
+                        <select class="setting-select" id="modelSelect">
+                            <option value="gpt-3.5-turbo" ${chatSettings.model === 'gpt-3.5-turbo' ? 'selected' : ''}>GPT-3.5 Turbo (Rápido)</option>
+                            <option value="gpt-4" ${chatSettings.model === 'gpt-4' ? 'selected' : ''}>GPT-4 (Preciso)</option>
+                            <option value="gpt-4-turbo" ${chatSettings.model === 'gpt-4-turbo' ? 'selected' : ''}>GPT-4 Turbo (Melhor)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label class="setting-label">🌡️ Temperatura: <span id="tempValue">${chatSettings.temperature}</span></label>
+                        <input 
+                            type="range" 
+                            class="setting-range" 
+                            id="temperatureRange" 
+                            min="0" 
+                            max="2" 
+                            step="0.1" 
+                            value="${chatSettings.temperature}"
+                            oninput="updateTempValue(this.value)"
+                        >
+                        <small class="setting-hint">0 = Preciso, 2 = Criativo</small>
+                    </div>
+                </div>
+                <div class="chat-settings-footer">
+                    <button class="btn-secondary" onclick="closeChatSettings()">Cancelar</button>
+                    <button class="btn-primary" onclick="saveChatSettings()">Salvar</button>
+                </div>
             </div>
         </div>
     `;
@@ -597,6 +672,54 @@ window.clearChat = function() {
     localStorage.removeItem('chatHistory');
     initChat();
     showNotification('🗑️ Chat limpo!', 'success');
+};
+
+window.showChatSettings = function() {
+    document.getElementById('chatSettingsModal').style.display = 'flex';
+};
+
+window.closeChatSettings = function() {
+    document.getElementById('chatSettingsModal').style.display = 'none';
+};
+
+window.updateTempValue = function(value) {
+    document.getElementById('tempValue').textContent = value;
+};
+
+window.saveChatSettings = function() {
+    chatSettings.apiKey = document.getElementById('apiKeyInput').value.trim();
+    chatSettings.model = document.getElementById('modelSelect').value;
+    chatSettings.temperature = parseFloat(document.getElementById('temperatureRange').value);
+    
+    localStorage.setItem('chatSettings', JSON.stringify(chatSettings));
+    closeChatSettings();
+    initChat(); // Recarrega para atualizar indicadores
+    showNotification('✅ Configurações salvas!', 'success');
+};
+
+window.exportChatHistory = function() {
+    if (chatHistory.length === 0) {
+        showNotification('⚠️ Não há conversa para exportar', 'info');
+        return;
+    }
+    
+    const exportData = {
+        exportedAt: new Date().toISOString(),
+        user: currentUser.name,
+        model: chatSettings.model,
+        temperature: chatSettings.temperature,
+        messages: chatHistory
+    };
+    
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `chat-history-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    showNotification('📥 Conversa exportada!', 'success');
 };
 
 /* ==================================================
