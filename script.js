@@ -41,6 +41,16 @@ window.doLogin = async function () {
         return;
     }
 
+    // MODO TESTE: Criar usuário admin automaticamente se não existir
+    const users = getUsers();
+    if (users.length === 0) {
+        setUsers([
+            { name: 'Admin', email: 'admin@admin.com', password: '123456', role: 'admin' },
+            { name: 'Usuário Teste', email: 'teste@teste.com', password: '123456', role: 'user' }
+        ]);
+        console.log('✅ Usuários de teste criados: admin@admin.com / teste@teste.com (senha: 123456)');
+    }
+
     if (backend) {
         try {
             const res = await fetch(`${API_URL}/api/auth/login`, {
