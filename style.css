@@ -1,0 +1,246 @@
+/* ================= RESET ================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #F8FAFC;
+    color: #0F172A;
+    min-height: 100vh;
+}
+
+/* ================= VARIÁVEIS ================= */
+:root {
+    --red-primary: #DC2626;
+    --red-hover: #B91C1C;
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F1F5F9;
+    --text-dark: #0F172A;
+    --text-secondary: #64748B;
+    --border: #E2E8F0;
+    --shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+/* ================= UTIL ================= */
+.hidden {
+    display: none !important;
+}
+
+.btn-primary {
+    background: var(--red-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background: var(--red-hover);
+}
+
+/* ================= AUTH ================= */
+.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.auth-container {
+    background: white;
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 380px;
+}
+
+.auth-title {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+
+.auth-container input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+/* ================= APP ================= */
+.app {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar {
+    width: 260px;
+    background: var(--bg-primary);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    display: flex;
+    gap: 12px;
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.user-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--red-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.user-name {
+    font-weight: 600;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-link {
+    padding: 14px 20px;
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+    background: var(--bg-secondary);
+}
+
+/* ================= MAIN ================= */
+.main-content {
+    flex: 1;
+    padding: 32px;
+}
+
+.content-section h2 {
+    margin-bottom: 20px;
+}
+
+/* ================= CARDS ================= */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+}
+
+.card-title {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.card-value {
+    font-size: 32px;
+    font-weight: 800;
+}
+
+/* ================= TABLE ================= */
+.stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.stats-table th,
+.stats-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+}
+
+.stats-table th {
+    background: var(--bg-secondary);
+}
+
+/* ================= MOBILE ================= */
+.mobile-menu-btn {
+    display: none;
+}
+
+.mobile-overlay {
+    display: none;
+}
+
+/* ================= RESPONSIVO ================= */
+@media (max-width: 768px) {
+
+    .sidebar {
+        position: fixed;
+        left: -260px;
+        top: 0;
+        height: 100%;
+        z-index: 1000;
+        transition: left 0.3s;
+    }
+
+    .sidebar.mobile-open {
+        left: 0;
+    }
+
+    .mobile-menu-btn {
+        display: flex;
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        background: var(--red-primary);
+        color: white;
+        border: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        font-size: 22px;
+        align-items: center;
+        justify-content: center;
+        z-index: 1100;
+    }
+
+    .mobile-overlay.active {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        z-index: 900;
+    }
+
+    .main-content {
+        padding: 80px 16px 16px;
+    }
+}
+
