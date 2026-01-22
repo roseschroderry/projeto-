@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração de Usuários - Sistema Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #DC2626;
+            --primary-dark: #B91C1C;
+            --secondary: #F8FAFC;
+            --text-dark: #0F172A;
+            --text-light: #64748B;
+            --border: #E2E8F0;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--border) 100%);
+            color: var(--text-dark);
+            margin: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            padding: 32px 24px;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+        }
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+        .user-table th, .user-table td {
+            padding: 12px 8px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+        .user-table th {
+            background: var(--secondary);
+            font-weight: 600;
+        }
+        .user-table tr:last-child td {
+            border-bottom: none;
+        }
+        .actions button {
+            margin-right: 8px;
+            padding: 6px 14px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            background: var(--primary);
+            color: #fff;
+            transition: background 0.2s;
+        }
+        .actions button:last-child {
+            margin-right: 0;
+            background: var(--primary-dark);
+        }
+        .actions button:hover {
+            opacity: 0.85;
+        }
+        .add-user-form {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .add-user-form input, .add-user-form select {
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .add-user-form button {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            padding: 8px 18px;
+            cursor: pointer;
+        }
+        .add-user-form button:hover {
+            background: var(--primary-dark);
+        }
+        .msg {
+            margin-bottom: 18px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+    </style>

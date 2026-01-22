@@ -124,8 +124,20 @@ function showMainApp() {
         currentUser.role === 'admin' ? 'Administrador' : 
         currentUser.role === 'vendedor' ? 'Vendedor' : 'Usuário';
 
+    // Inicializar funcionalidades avançadas
     updateDashboard();
     renderUsers();
+    
+    // Carregar funcionalidades extras se features.js estiver carregado
+    setTimeout(() => {
+        if (typeof enhanceDashboard === 'function') {
+            enhanceDashboard();
+            initUpload();
+            initSheets();
+            initReports();
+            showNotification(`Bem-vindo, ${currentUser.name}!`, 'success');
+        }
+    }, 100);
 }
 
 /* ==================================================

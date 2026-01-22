@@ -83,7 +83,7 @@ git push origin main
 Name: projeto-frontend
 Branch: main
 Root Directory: [deixe VAZIO]
-Build Command: [deixe VAZIO]
+Build Command: echo "Frontend estático - sem build necessário"
 Publish Directory: .
 ```
 
