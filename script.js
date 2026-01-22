@@ -79,8 +79,8 @@ window.doLogin = async function () {
     }
 
     // LOGIN LOCAL
-    const users = getUsers();
-    const user = users.find(u => u.email === email && u.password === password);
+    const localUsers = getUsers();
+    const user = localUsers.find(u => u.email === email && u.password === password);
 
     if (!user) {
         alert('Credenciais inválidas');
