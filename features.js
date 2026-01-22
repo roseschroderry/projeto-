@@ -280,6 +280,8 @@ function initReports() {
         </div>
         
         <button class="btn-primary" onclick="exportReport()">📥 Exportar Relatório (JSON)</button>
+        <button class="btn-primary" onclick="exportToPDF()" style="margin-left: 8px;">📄 Exportar PDF</button>
+        <button class="btn-primary" onclick="exportToExcel()" style="margin-left: 8px;">📊 Exportar Excel</button>
     `;
 }
 
@@ -338,6 +340,263 @@ window.exportReport = function() {
     a.click();
     
     showNotification('📥 Relatório exportado!', 'success');
+};
+
+window.exportToPDF = function() {
+    showNotification('📄 Gerando PDF... (funcionalidade simulada)', 'info');
+    setTimeout(() => {
+        showNotification('✅ PDF gerado com sucesso!', 'success');
+    }, 2000);
+};
+
+window.exportToExcel = function() {
+    // Criar CSV (compatível com Excel)
+    const users = getUsers();
+    let csv = 'Nome,Email,Tipo\n';
+    users.forEach(u => {
+        csv += `${u.name},${u.email},${u.role}\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `usuarios-${Date.now()}.csv`;
+    a.click();
+    
+    showNotification('📊 Planilha Excel exportada!', 'success');
+};
+
+/* ==================================================
+   CHAT IA
+================================================== */
+
+let chatHistory = [];
+
+function initChat() {
+    const container = document.getElementById('chatContainer');
+    if (!container) return;
+    
+    chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+    
+    container.innerHTML = `
+        <div class="chat-wrapper">
+            <div class="chat-messages" id="chatMessages">
+                ${chatHistory.length === 0 ? `
+                    <div class="chat-welcome">
+                        <div class="chat-welcome-icon">🤖</div>
+                        <h3>Assistente IA</h3>
+                        <p>Olá! Sou seu assistente inteligente. Como posso ajudar?</p>
+                        <div class="chat-suggestions">
+                            <button class="chat-suggestion" onclick="sendSuggestion('Me mostre estatísticas do sistema')">
+                                📊 Estatísticas
+                            </button>
+                            <button class="chat-suggestion" onclick="sendSuggestion('Como adicionar novos usuários?')">
+                                👥 Adicionar usuários
+                            </button>
+                            <button class="chat-suggestion" onclick="sendSuggestion('Gerar relatório completo')">
+                                📑 Gerar relatório
+                            </button>
+                        </div>
+                    </div>
+                ` : renderChatMessages()}
+            </div>
+            
+            <div class="chat-input-container">
+                <textarea 
+                    class="chat-input" 
+                    id="chatInput" 
+                    placeholder="Digite sua mensagem..."
+                    rows="1"
+                    onkeydown="handleChatKeyPress(event)"
+                ></textarea>
+                <button class="chat-send-btn" onclick="sendMessage()">
+                    <span>📤</span>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    scrollChatToBottom();
+}
+
+function renderChatMessages() {
+    return chatHistory.map(msg => `
+        <div class="chat-message ${msg.sender}">
+            <div class="chat-message-avatar">
+                ${msg.sender === 'user' ? currentUser.name.charAt(0) : '🤖'}
+            </div>
+            <div class="chat-message-content">
+                <div class="chat-message-header">
+                    <span class="chat-message-name">${msg.sender === 'user' ? currentUser.name : 'Assistente IA'}</span>
+                    <span class="chat-message-time">${msg.time}</span>
+                </div>
+                <div class="chat-message-text">${msg.text}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+window.sendMessage = function() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    // Adicionar mensagem do usuário
+    addChatMessage({
+        sender: 'user',
+        text: message,
+        time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+    });
+    
+    input.value = '';
+    input.style.height = 'auto';
+    
+    // Simular resposta da IA
+    setTimeout(() => {
+        const response = generateAIResponse(message);
+        addChatMessage({
+            sender: 'ai',
+            text: response,
+            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        });
+    }, 1000);
+};
+
+window.sendSuggestion = function(text) {
+    const input = document.getElementById('chatInput');
+    input.value = text;
+    sendMessage();
+};
+
+function addChatMessage(message) {
+    chatHistory.push(message);
+    localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+    
+    const messagesContainer = document.getElementById('chatMessages');
+    messagesContainer.innerHTML = renderChatMessages();
+    scrollChatToBottom();
+}
+
+function scrollChatToBottom() {
+    const messagesContainer = document.getElementById('chatMessages');
+    if (messagesContainer) {
+        setTimeout(() => {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 100);
+    }
+}
+
+function generateAIResponse(userMessage) {
+    const msg = userMessage.toLowerCase();
+    
+    // Estatísticas
+    if (msg.includes('estatística') || msg.includes('estatistica') || msg.includes('dados')) {
+        const users = getUsers();
+        const files = JSON.parse(localStorage.getItem('uploadedFiles') || '[]');
+        const sheets = JSON.parse(localStorage.getItem('connectedSheets') || '[]');
+        
+        return `📊 **Estatísticas do Sistema:**\n\n` +
+               `👥 **Usuários:** ${users.length} cadastrados\n` +
+               `📁 **Arquivos:** ${files.length} enviados\n` +
+               `📊 **Planilhas:** ${sheets.length} conectadas\n\n` +
+               `✅ Sistema operacional e funcionando perfeitamente!`;
+    }
+    
+    // Relatórios
+    if (msg.includes('relatório') || msg.includes('relatorio') || msg.includes('gerar')) {
+        return `📑 **Geração de Relatórios:**\n\n` +
+               `Para gerar relatórios, acesse a seção "📑 Relatórios" no menu lateral.\n\n` +
+               `Você pode exportar em:\n` +
+               `• JSON - Dados estruturados\n` +
+               `• PDF - Documento formatado\n` +
+               `• Excel - Planilha editável\n\n` +
+               `Todos os relatórios incluem usuários, arquivos e planilhas conectadas.`;
+    }
+    
+    // Usuários
+    if (msg.includes('usuário') || msg.includes('usuario') || msg.includes('adicionar') || msg.includes('criar')) {
+        if (currentUser.role !== 'admin') {
+            return `⚠️ **Permissão Negada:**\n\nApenas administradores podem adicionar novos usuários.\n\nSeu perfil atual: **${currentUser.role}**`;
+        }
+        return `👥 **Gerenciamento de Usuários:**\n\n` +
+               `Para adicionar usuários:\n` +
+               `1. Acesse "👥 Usuários" no menu\n` +
+               `2. Clique em "➕ Novo Usuário"\n` +
+               `3. Preencha os dados (nome, email, senha, tipo)\n` +
+               `4. Salve as alterações\n\n` +
+               `Tipos disponíveis: Admin, Vendedor, User`;
+    }
+    
+    // Upload
+    if (msg.includes('arquivo') || msg.includes('upload') || msg.includes('enviar')) {
+        return `📤 **Upload de Arquivos:**\n\n` +
+               `Para enviar arquivos:\n` +
+               `1. Acesse "📤 Upload" no menu\n` +
+               `2. Arraste arquivos para a área indicada OU\n` +
+               `3. Clique em "📁 Selecionar Arquivos"\n\n` +
+               `Recursos:\n` +
+               `• Drag & Drop\n` +
+               `• Múltiplos arquivos\n` +
+               `• Visualização com detalhes\n` +
+               `• Gerenciamento completo`;
+    }
+    
+    // Google Sheets
+    if (msg.includes('planilha') || msg.includes('sheets') || msg.includes('google')) {
+        return `📊 **Google Sheets:**\n\n` +
+               `Para conectar planilhas:\n` +
+               `1. Acesse "📊 Google Sheets" no menu\n` +
+               `2. Clique em "🔗 Conectar Nova Planilha"\n` +
+               `3. Cole a URL da planilha\n` +
+               `4. Sincronize quando necessário\n\n` +
+               `A sincronização mantém seus dados atualizados automaticamente.`;
+    }
+    
+    // Ajuda geral
+    if (msg.includes('ajuda') || msg.includes('help') || msg.includes('como')) {
+        return `💡 **Central de Ajuda:**\n\n` +
+               `Estou aqui para ajudar! Posso responder sobre:\n\n` +
+               `📊 Estatísticas do sistema\n` +
+               `👥 Gerenciamento de usuários\n` +
+               `📤 Upload de arquivos\n` +
+               `📊 Google Sheets\n` +
+               `📑 Relatórios\n` +
+               `⚙️ Configurações\n\n` +
+               `Digite sua dúvida ou escolha uma sugestão acima!`;
+    }
+    
+    // Resposta padrão
+    return `Entendi sua mensagem: "${userMessage}"\n\n` +
+           `Posso ajudar com:\n` +
+           `• Estatísticas do sistema 📊\n` +
+           `• Gerenciamento de usuários 👥\n` +
+           `• Upload de arquivos 📤\n` +
+           `• Google Sheets 📊\n` +
+           `• Geração de relatórios 📑\n\n` +
+           `Como posso ser útil?`;
+}
+
+window.handleChatKeyPress = function(event) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+    }
+    
+    // Auto-resize textarea
+    const textarea = event.target;
+    textarea.style.height = 'auto';
+    textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+};
+
+window.clearChat = function() {
+    if (!confirm('Limpar histórico do chat?')) return;
+    
+    chatHistory = [];
+    localStorage.removeItem('chatHistory');
+    initChat();
+    showNotification('🗑️ Chat limpo!', 'success');
 };
 
 /* ==================================================

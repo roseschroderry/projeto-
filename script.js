@@ -135,6 +135,7 @@ function showMainApp() {
             initUpload();
             initSheets();
             initReports();
+            initChat();
             showNotification(`Bem-vindo, ${currentUser.name}!`, 'success');
         }
     }, 100);

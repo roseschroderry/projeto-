@@ -71,6 +71,7 @@
                 📊 Google Sheets
             </a>
             <a href="#" class="sidebar-link" onclick="navigateTo(event,'relatorios')">📑 Relatórios</a>
+            <a href="#" class="sidebar-link" onclick="navigateTo(event,'chat')">💬 Chat IA</a>
             <a href="#" class="sidebar-link" onclick="navigateTo(event,'perfil')">👤 Meu Perfil</a>
             <a href="#" class="sidebar-link" onclick="location.reload()">🚪 Sair</a>
         </nav>
@@ -152,6 +153,12 @@
             <button class="btn-primary" style="margin-top: 24px;" onclick="connectGoogleSheet()">
                 🔗 Conectar Nova Planilha
             </button>
+        </section>
+
+        <!-- CHAT IA -->
+        <section id="chatSection" class="content-section hidden">
+            <h2>💬 Chat com Inteligência Artificial</h2>
+            <div id="chatContainer"></div>
         </section>
 
         <!-- MEU PERFIL -->
