@@ -63,7 +63,14 @@
             <a href="#" class="sidebar-link" onclick="navigateTo(event,'usuarios')" id="adminSection" style="display:none">
                 👥 Usuários
             </a>
+            <a href="#" class="sidebar-link" onclick="navigateTo(event,'upload')" id="uploadSection" style="display:none">
+                📤 Upload de Arquivos
+            </a>
+            <a href="#" class="sidebar-link" onclick="navigateTo(event,'sheets')">
+                📊 Google Sheets
+            </a>
             <a href="#" class="sidebar-link" onclick="navigateTo(event,'relatorios')">📑 Relatórios</a>
+            <a href="#" class="sidebar-link" onclick="navigateTo(event,'perfil')">👤 Meu Perfil</a>
             <a href="#" class="sidebar-link" onclick="location.reload()">🚪 Sair</a>
         </nav>
     </aside>
@@ -110,6 +117,61 @@
             <h2>📑 Relatórios</h2>
             <div id="relatoriosContainer">
                 <p>Use o menu para carregar relatórios do Google Sheets ou Backend.</p>
+            </div>
+        </section>
+
+        <!-- UPLOAD DE ARQUIVOS -->
+        <section id="uploadSection" class="content-section hidden">
+            <h2>📤 Upload de Arquivos</h2>
+            <div class="upload-area">
+                <input type="file" id="fileInput" multiple style="display:none">
+                <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
+                    📁 Selecionar Arquivos
+                </button>
+                <p style="margin-top: 16px; color: #64748B;">
+                    Arraste arquivos aqui ou clique no botão acima
+                </p>
+            </div>
+            <div id="filesList" style="margin-top: 24px;"></div>
+        </section>
+
+        <!-- GOOGLE SHEETS -->
+        <section id="sheetsSection" class="content-section hidden">
+            <h2>📊 Google Sheets</h2>
+            <div class="cards-grid" style="margin-top: 24px;">
+                <div class="card" style="cursor: pointer;" onclick="alert('Conectar ao Google Sheets')">
+                    <div class="card-title">Planilhas Conectadas</div>
+                    <div class="card-value">0</div>
+                </div>
+                <div class="card" style="cursor: pointer;" onclick="alert('Sincronizar dados')">
+                    <div class="card-title">Última Sincronização</div>
+                    <div class="card-value" style="font-size: 16px;">Nunca</div>
+                </div>
+            </div>
+            <button class="btn-primary" style="margin-top: 24px;" onclick="alert('Funcionalidade em desenvolvimento')">
+                🔗 Conectar Nova Planilha
+            </button>
+        </section>
+
+        <!-- MEU PERFIL -->
+        <section id="perfilSection" class="content-section hidden">
+            <h2>👤 Meu Perfil</h2>
+            <div style="background: white; padding: 24px; border-radius: 12px; margin-top: 24px;">
+                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                    <div style="width: 80px; height: 80px; background: #DC2626; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; font-weight: bold;">
+                        <span id="perfilAvatar">A</span>
+                    </div>
+                    <div>
+                        <h3 id="perfilNome" style="margin: 0 0 8px 0;">Admin</h3>
+                        <p id="perfilEmail" style="margin: 0; color: #64748B;">admin@admin.com</p>
+                        <p id="perfilRole" style="margin: 8px 0 0 0; color: #DC2626; font-weight: 600;">Administrador</p>
+                    </div>
+                </div>
+                <div style="border-top: 1px solid #E2E8F0; padding-top: 24px;">
+                    <h4 style="margin: 0 0 16px 0;">Informações da Conta</h4>
+                    <p style="margin: 8px 0;"><strong>Data de Criação:</strong> Hoje</p>
+                    <p style="margin: 8px 0;"><strong>Último Acesso:</strong> Agora</p>
+                </div>
             </div>
         </section>
 

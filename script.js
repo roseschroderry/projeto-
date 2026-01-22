@@ -113,7 +113,16 @@ function showMainApp() {
 
     if (currentUser.role === 'admin') {
         document.getElementById('adminSection').style.display = 'block';
+        document.getElementById('uploadSection').style.display = 'block';
     }
+
+    // Atualizar perfil
+    document.getElementById('perfilNome').textContent = currentUser.name;
+    document.getElementById('perfilEmail').textContent = currentUser.email;
+    document.getElementById('perfilAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+    document.getElementById('perfilRole').textContent = 
+        currentUser.role === 'admin' ? 'Administrador' : 
+        currentUser.role === 'vendedor' ? 'Vendedor' : 'Usuário';
 
     updateDashboard();
     renderUsers();
