@@ -416,11 +416,20 @@ function initChat() {
                             <button class="chat-suggestion" onclick="sendSuggestion('Me mostre estatísticas do sistema')">
                                 📊 Estatísticas
                             </button>
-                            <button class="chat-suggestion" onclick="sendSuggestion('Como adicionar novos usuários?')">
-                                👥 Adicionar usuários
+                            <button class="chat-suggestion" onclick="sendSuggestion('Qual é o meu perfil?')">
+                                👤 Meu Perfil
                             </button>
-                            <button class="chat-suggestion" onclick="sendSuggestion('Gerar relatório completo')">
-                                📑 Gerar relatório
+                            <button class="chat-suggestion" onclick="sendSuggestion('Mostre o histórico de atividades')">
+                                📜 Histórico
+                            </button>
+                            <button class="chat-suggestion" onclick="sendSuggestion('Como está o status do sistema?')">
+                                🖥️ Status do Sistema
+                            </button>
+                            <button class="chat-suggestion" onclick="sendSuggestion('Quais comandos estão disponíveis?')">
+                                💡 Ver Comandos
+                            </button>
+                            <button class="chat-suggestion" onclick="sendSuggestion('Dicas de segurança')">
+                                🔒 Segurança
                             </button>
                         </div>
                     </div>
@@ -661,17 +670,167 @@ function generateAIResponse(userMessage) {
                `A sincronização mantém seus dados atualizados automaticamente.`;
     }
     
+    // Perfil do usuário
+    if (msg.includes('perfil') || msg.includes('meu perfil') || msg.includes('minha conta')) {
+        return `👤 **Seu Perfil:**\n\n` +
+               `👤 Nome: **${currentUser.name}**\n` +
+               `📧 Email: ${currentUser.email}\n` +
+               `🎯 Tipo: **${currentUser.role.toUpperCase()}**\n` +
+               `📅 Desde: ${currentUser.createdAt || 'N/A'}\n\n` +
+               `${currentUser.role === 'admin' ? '🔑 **Permissões:** Acesso total ao sistema' : '📝 **Permissões:** Acesso padrão'}\n\n` +
+               `Para alterar seus dados, acesse as configurações.`;
+    }
+    
+    // Histórico de atividades
+    if (msg.includes('histórico') || msg.includes('historico') || msg.includes('atividades') || msg.includes('logs')) {
+        const files = JSON.parse(localStorage.getItem('uploadedFiles') || '[]');
+        const sheets = JSON.parse(localStorage.getItem('connectedSheets') || '[]');
+        const recentFiles = files.slice(-3);
+        const recentSheets = sheets.slice(-3);
+        
+        return `📜 **Histórico de Atividades:**\n\n` +
+               `📤 **Últimos Uploads:**\n` +
+               (recentFiles.length > 0 ? recentFiles.map(f => `• ${f.name} (${f.size})`).join('\n') : '• Nenhum arquivo enviado ainda\n') +
+               `\n\n📊 **Últimas Planilhas:**\n` +
+               (recentSheets.length > 0 ? recentSheets.map(s => `• ${s.name}`).join('\n') : '• Nenhuma planilha conectada\n') +
+               `\n\n💡 Use "estatísticas" para ver o resumo completo.`;
+    }
+    
+    // Backup de dados
+    if (msg.includes('backup') || msg.includes('exportar dados') || msg.includes('salvar dados')) {
+        return `💾 **Backup de Dados:**\n\n` +
+               `Seus dados estão seguros no navegador!\n\n` +
+               `📦 **O que é salvo:**\n` +
+               `• Histórico de uploads\n` +
+               `• Planilhas conectadas\n` +
+               `• Configurações do chat\n` +
+               `• Conversas anteriores\n\n` +
+               `💡 **Exportar:**\n` +
+               `Use o botão 📥 Exportar no topo do chat para salvar suas conversas em JSON.\n\n` +
+               `⚠️ **Importante:** Limpar dados do navegador apagará tudo!`;
+    }
+    
+    // Status do sistema
+    if (msg.includes('sistema') || msg.includes('status') || msg.includes('servidor') || msg.includes('online')) {
+        const apiActive = chatSettings.apiKey && chatSettings.apiKey.startsWith('sk-');
+        const users = getUsers();
+        const storage = JSON.stringify(localStorage).length;
+        const storageKB = (storage / 1024).toFixed(2);
+        
+        return `🖥️ **Status do Sistema:**\n\n` +
+               `✅ Sistema: **Online**\n` +
+               `🤖 Chat IA: **${apiActive ? 'API Ativa (GPT-3.5 Turbo)' : 'Modo Offline'}**\n` +
+               `👥 Usuários: ${users.length} cadastrados\n` +
+               `💾 Armazenamento: ${storageKB} KB usado\n` +
+               `🌐 Servidor: **Render (Cloud)**\n` +
+               `📡 Conexão: **Estável**\n\n` +
+               `Todos os sistemas operacionais! 🚀`;
+    }
+    
+    // Limpar cache
+    if (msg.includes('limpar') || msg.includes('cache') || msg.includes('resetar')) {
+        return `🧹 **Limpeza de Dados:**\n\n` +
+               `⚠️ **Atenção:** Você pode limpar:\n\n` +
+               `1️⃣ **Chat:** Use o botão 🗑️ no topo (limpa apenas conversas)\n` +
+               `2️⃣ **Cache do Navegador:** F12 > Application > Clear Storage\n` +
+               `3️⃣ **Todos os dados:** Configurações do navegador\n\n` +
+               `💡 **Recomendação:**\n` +
+               `Faça backup antes de limpar dados importantes!\n\n` +
+               `Para limpar apenas este chat, use o botão 🗑️ Clear acima.`;
+    }
+    
+    // Segurança
+    if (msg.includes('segurança') || msg.includes('seguranca') || msg.includes('senha') || msg.includes('proteger')) {
+        return `🔒 **Segurança do Sistema:**\n\n` +
+               `✅ **Boas Práticas:**\n` +
+               `• Use senhas fortes (8+ caracteres)\n` +
+               `• Não compartilhe suas credenciais\n` +
+               `• Faça logout em computadores públicos\n` +
+               `• Mantenha seu email seguro\n\n` +
+               `🔑 **Sua Chave API:**\n` +
+               (chatSettings.apiKey ? '• Configurada e segura no navegador\n' : '• Não configurada\n') +
+               `• Nunca compartilhe sua chave\n` +
+               `• Revogue se comprometida\n\n` +
+               `⚠️ Se suspeitar de acesso não autorizado, contate um administrador!`;
+    }
+    
+    // Notificações
+    if (msg.includes('notificação') || msg.includes('notificacao') || msg.includes('alertas') || msg.includes('avisos')) {
+        return `🔔 **Central de Notificações:**\n\n` +
+               `📬 **Tipos de alertas:**\n` +
+               `• ✅ Sucesso - Ações concluídas\n` +
+               `• ⚠️ Aviso - Atenção necessária\n` +
+               `• ❌ Erro - Problemas detectados\n` +
+               `• ℹ️ Info - Informações gerais\n\n` +
+               `As notificações aparecem no canto superior direito e desaparecem automaticamente.\n\n` +
+               `💡 Fique atento aos alertas para melhor experiência!`;
+    }
+    
+    // Tema
+    if (msg.includes('tema') || msg.includes('aparência') || msg.includes('aparencia') || msg.includes('escuro') || msg.includes('claro')) {
+        return `🎨 **Personalização de Tema:**\n\n` +
+               `Atualmente o sistema usa:\n` +
+               `• 🔴 Vermelho como cor principal\n` +
+               `• 🤍 Fundo claro e limpo\n` +
+               `• 📱 Design responsivo\n\n` +
+               `💡 **Em breve:**\n` +
+               `Estamos trabalhando em temas personalizáveis:\n` +
+               `• 🌙 Modo Escuro\n` +
+               `• 🎨 Paletas de cores\n` +
+               `• ✨ Customizações avançadas\n\n` +
+               `Aguarde as próximas atualizações!`;
+    }
+    
+    // Atalhos de teclado
+    if (msg.includes('atalhos') || msg.includes('atalho') || msg.includes('teclado') || msg.includes('keyboard')) {
+        return `⌨️ **Atalhos de Teclado:**\n\n` +
+               `🚀 **No Chat:**\n` +
+               `• Enter - Enviar mensagem\n` +
+               `• Shift + Enter - Nova linha\n` +
+               `• Esc - Fechar configurações\n\n` +
+               `🖱️ **No Sistema:**\n` +
+               `• Clique nos cards do menu\n` +
+               `• Arraste arquivos para upload\n` +
+               `• Use os botões de ação rápida\n\n` +
+               `💡 **Dica:** Explore a interface para descobrir mais recursos!`;
+    }
+    
+    // Exportar dados
+    if (msg.includes('exportar') || msg.includes('baixar') || msg.includes('download') || msg.includes('salvar conversa')) {
+        return `📥 **Exportar Dados:**\n\n` +
+               `📋 **Conversas do Chat:**\n` +
+               `Use o botão 📥 Exportar no topo do chat para salvar em JSON.\n\n` +
+               `📑 **Relatórios:**\n` +
+               `Acesse a seção "📑 Relatórios" para exportar:\n` +
+               `• JSON - Dados estruturados\n` +
+               `• PDF - Documento formatado\n` +
+               `• Excel - Planilha editável\n\n` +
+               `Os arquivos são baixados automaticamente para seu computador.`;
+    }
+    
     // Ajuda geral
-    if (msg.includes('ajuda') || msg.includes('help') || msg.includes('como')) {
-        return `💡 **Central de Ajuda:**\n\n` +
-               `Estou aqui para ajudar! Posso responder sobre:\n\n` +
-               `📊 Estatísticas do sistema\n` +
-               `👥 Gerenciamento de usuários\n` +
-               `📤 Upload de arquivos\n` +
-               `📊 Google Sheets\n` +
-               `📑 Relatórios\n` +
-               `⚙️ Configurações\n\n` +
-               `Digite sua dúvida ou escolha uma sugestão acima!`;
+    if (msg.includes('ajuda') || msg.includes('help') || msg.includes('como') || msg.includes('comandos')) {
+        return `💡 **Central de Ajuda - Comandos Disponíveis:**\n\n` +
+               `📊 **Dados:**\n` +
+               `• estatísticas - Números do sistema\n` +
+               `• histórico - Atividades recentes\n` +
+               `• backup - Informações de backup\n\n` +
+               `👤 **Usuário:**\n` +
+               `• perfil - Suas informações\n` +
+               `• segurança - Dicas de segurança\n\n` +
+               `⚙️ **Sistema:**\n` +
+               `• sistema - Status online\n` +
+               `• notificações - Central de alertas\n` +
+               `• tema - Personalização\n` +
+               `• atalhos - Teclas rápidas\n\n` +
+               `📤 **Ações:**\n` +
+               `• usuários - Gerenciar usuários\n` +
+               `• upload - Enviar arquivos\n` +
+               `• planilhas - Google Sheets\n` +
+               `• relatórios - Gerar relatórios\n` +
+               `• exportar - Baixar dados\n` +
+               `• limpar - Limpar cache\n\n` +
+               `Digite qualquer comando acima para começar!`;
     }
     
     // Resposta padrão
