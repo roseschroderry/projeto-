@@ -16,25 +16,53 @@
 
 <body>
 
-<!-- ================= LOGIN / AUTH ================= -->
+<!-- ================= LOGIN / AUTH =================  -->
 <div id="authPage" class="auth-page">
     <div class="auth-container">
-        <h1 class="auth-title">🔐 Acesso ao Sistema</h1>
+        <div class="auth-header">
+            <div class="auth-icon">🔒</div>
+            <h1 class="auth-title">Sistema Premium</h1>
+            <p class="auth-subtitle">Faça login para continuar</p>
+        </div>
 
-        <!-- LOGIN -->
-        <div id="loginForm">
-            <input type="email" id="loginEmail" placeholder="Email">
-            <input type="password" id="loginPassword" placeholder="Senha">
+        <div class="auth-body">
+            <div id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="icon">✉️</i> Email
+                    </label>
+                    <input type="email" id="loginEmail" class="form-input" placeholder="seu@email.com">
+                </div>
 
-            <label class="checkbox">
-                <input type="checkbox" id="rememberMe"> Lembrar-me
-            </label>
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="icon">🔑</i> Senha
+                    </label>
+                    <div class="password-wrapper">
+                        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••">
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">👁️</button>
+                    </div>
+                </div>
 
-            <label class="checkbox">
-                <input type="checkbox" id="useBackendApi"> Usar Backend API
-            </label>
+                <div class="form-options">
+                    <label class="checkbox-modern">
+                        <input type="checkbox" id="rememberMe">
+                        <span class="checkmark"></span>
+                        <span class="checkbox-label">Lembrar-me</span>
+                    </label>
 
-            <button id="loginBtn" onclick="doLogin()">Entrar</button>
+                    <label class="checkbox-modern">
+                        <input type="checkbox" id="useBackendApi">
+                        <span class="checkmark"></span>
+                        <span class="checkbox-label">Backend API</span>
+                    </label>
+                </div>
+
+                <button id="loginBtn" class="btn-auth" onclick="doLogin()">
+                    <span class="btn-text">Entrar no Sistema</span>
+                    <span class="btn-icon">→</span>
+                </button>
+            </div>
         </div>
     </div>
 </div>
