@@ -790,15 +790,32 @@ async function sendToOpenAI(message) {
         // Remove mensagem de "digitando..."
         chatHistory = chatHistory.filter(m => m.id !== typingId);
         
-        // Fallback para resposta simulada em caso de erro
+        // Mensagens específicas por tipo de erro
+        let errorPrefix = '⚠️ Usando modo offline';
+        
+        if (error.message.includes('quota') || error.message.includes('billing')) {
+            errorPrefix = '💳 **Créditos Insuficientes**\n\nSua conta OpenAI não tem créditos disponíveis.\n\n' +
+                         '📝 Para adicionar créditos:\n' +
+                         '1. Acesse: https://platform.openai.com/account/billing\n' +
+                         '2. Adicione um método de pagamento\n' +
+                         '3. Adicione créditos (mínimo $5)\n\n' +
+                         '💡 Enquanto isso, usando modo offline:\n\n';
+            
+            showNotification('💳 Sem créditos OpenAI - usando modo offline', 'error');
+        } else if (error.message.includes('API key')) {
+            errorPrefix = '🔑 **Chave API Inválida**\n\nVerifique se a chave está correta.\n\n';
+            showNotification('🔑 Chave API inválida', 'error');
+        } else {
+            showNotification('Erro na API - usando modo offline', 'error');
+        }
+        
+        // Fallback para resposta simulada
         const fallbackResponse = generateAIResponse(message);
         addChatMessage({
             sender: 'ai',
-            text: `⚠️ Usando modo offline (${error.message})\n\n${fallbackResponse}`,
+            text: `${errorPrefix}${fallbackResponse}`,
             time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
         });
-        
-        showNotification('Erro na API - usando modo offline', 'error');
     }
 }
 
