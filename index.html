@@ -20,27 +20,51 @@
 <div id="authPage" class="auth-page">
     <div class="auth-container">
         <div class="auth-header">
-            <div class="auth-icon">🔒</div>
+            <div class="auth-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+            </div>
             <h1 class="auth-title">Sistema Premium</h1>
-            <p class="auth-subtitle">Faça login para continuar</p>
+            <p class="auth-subtitle">Gestão Inteligente e Segura</p>
         </div>
 
         <div class="auth-body">
-            <div id="loginForm">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchAuthTab('login')">Login</button>
+                <button class="tab-btn" onclick="switchAuthTab('register')">Registrar</button>
+            </div>
+
+            <!-- LOGIN TAB -->
+            <div id="loginForm" class="tab-content active">
                 <div class="form-group">
                     <label class="form-label">
-                        <i class="icon">✉️</i> Email
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        Email
                     </label>
-                    <input type="email" id="loginEmail" class="form-input" placeholder="seu@email.com">
+                    <input type="email" id="loginEmail" class="form-input" placeholder="seu@email.com" autocomplete="email">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">
-                        <i class="icon">🔑</i> Senha
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Senha
                     </label>
                     <div class="password-wrapper">
-                        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••">
-                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">👁️</button>
+                        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" autocomplete="current-password">
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('loginPassword')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
@@ -48,19 +72,68 @@
                     <label class="checkbox-modern">
                         <input type="checkbox" id="rememberMe">
                         <span class="checkmark"></span>
-                        <span class="checkbox-label">Lembrar-me</span>
-                    </label>
-
-                    <label class="checkbox-modern">
-                        <input type="checkbox" id="useBackendApi">
-                        <span class="checkmark"></span>
-                        <span class="checkbox-label">Backend API</span>
+                        <span class="checkbox-label">Manter conectado</span>
                     </label>
                 </div>
 
                 <button id="loginBtn" class="btn-auth" onclick="doLogin()">
                     <span class="btn-text">Entrar no Sistema</span>
-                    <span class="btn-icon">→</span>
+                    <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- REGISTER TAB -->
+            <div id="registerForm" class="tab-content" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        Nome Completo
+                    </label>
+                    <input type="text" id="registerName" class="form-input" placeholder="Seu nome completo">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        Email
+                    </label>
+                    <input type="email" id="registerEmail" class="form-input" placeholder="seu@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Senha
+                    </label>
+                    <div class="password-wrapper">
+                        <input type="password" id="registerPassword" class="form-input" placeholder="Mínimo 6 caracteres">
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('registerPassword')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn-auth" onclick="doRegister()">
+                    <span class="btn-text">Criar Conta</span>
+                    <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
                 </button>
             </div>
         </div>

@@ -30,17 +30,102 @@ function setUsers(users) {
    TOGGLE PASSWORD VISIBILITY
 ================================================== */
 
-window.togglePasswordVisibility = function() {
-    const passwordInput = document.getElementById('loginPassword');
-    const toggleBtn = document.querySelector('.toggle-password');
+window.togglePasswordVisibility = function(inputId) {
+    const passwordInput = document.getElementById(inputId);
+    const toggleBtn = passwordInput.parentElement.querySelector('.toggle-password');
     
     if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
-        toggleBtn.textContent = '🙈';
+        toggleBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+            <line x1="1" y1="1" x2="23" y2="23"></line>
+        </svg>`;
     } else {
         passwordInput.type = 'password';
-        toggleBtn.textContent = '👁️';
+        toggleBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+        </svg>`;
     }
+};
+
+/* ==================================================
+   SWITCH AUTH TAB
+================================================== */
+
+window.switchAuthTab = function(tab) {
+    // Atualiza botões
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Atualiza conteúdo
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+        content.style.display = 'none';
+    });
+    
+    const targetContent = document.getElementById(tab + 'Form');
+    if (targetContent) {
+        targetContent.classList.add('active');
+        targetContent.style.display = 'block';
+    }
+};
+
+/* ==================================================
+   REGISTER
+================================================== */
+
+window.doRegister = function() {
+    const name = document.getElementById('registerName').value.trim();
+    const email = document.getElementById('registerEmail').value.trim().toLowerCase();
+    const password = document.getElementById('registerPassword').value;
+    
+    if (!name || !email || !password) {
+        alert('Preencha todos os campos');
+        return;
+    }
+    
+    if (name.length < 3) {
+        alert('Nome deve ter no mínimo 3 caracteres');
+        return;
+    }
+    
+    if (password.length < 6) {
+        alert('Senha deve ter no mínimo 6 caracteres');
+        return;
+    }
+    
+    const users = getUsers();
+    
+    // Verificar se email já existe
+    if (users.find(u => u.email === email)) {
+        alert('Email já cadastrado');
+        return;
+    }
+    
+    // Adicionar novo usuário
+    const newUser = {
+        name: name,
+        email: email,
+        password: password,
+        role: 'user',
+        createdAt: new Date().toISOString()
+    };
+    
+    users.push(newUser);
+    setUsers(users);
+    
+    alert('Conta criada com sucesso! Faça login para continuar.');
+    
+    // Limpar campos
+    document.getElementById('registerName').value = '';
+    document.getElementById('registerEmail').value = '';
+    document.getElementById('registerPassword').value = '';
+    
+    // Voltar para tab de login
+    document.querySelector('[onclick*="login"]').click();
 };
 
 /* ==================================================
@@ -51,7 +136,6 @@ window.doLogin = async function () {
     const email = document.getElementById('loginEmail').value.trim().toLowerCase();
     const password = document.getElementById('loginPassword').value;
     const remember = document.getElementById('rememberMe').checked;
-    const backend = document.getElementById('useBackendApi').checked;
 
     if (!email || !password) {
         alert('Preencha email e senha');
@@ -66,33 +150,6 @@ window.doLogin = async function () {
             { name: 'Usuário Teste', email: 'teste@teste.com', password: '123456', role: 'user' }
         ]);
         console.log('✅ Usuários de teste criados: admin@admin.com / teste@teste.com (senha: 123456)');
-    }
-
-    if (backend) {
-        try {
-            const res = await fetch(`${API_URL}/api/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            if (!res.ok) throw new Error('Credenciais inválidas');
-
-            const data = await res.json();
-            currentUser = data.user;
-            authToken = data.token;
-            useBackend = true;
-
-            localStorage.setItem('api_token', authToken);
-            localStorage.setItem('user', JSON.stringify(currentUser));
-            localStorage.setItem('use_backend', 'true');
-
-            showMainApp();
-            return;
-
-        } catch (err) {
-            alert('Erro no backend: ' + err.message);
-        }
     }
 
     // LOGIN LOCAL

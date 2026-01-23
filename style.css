@@ -118,11 +118,20 @@ body {
     font-size: 48px;
     margin-bottom: 15px;
     animation: pulse 2s ease-in-out infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-icon svg {
+    width: 48px;
+    height: 48px;
+    stroke: white;
 }
 
 @keyframes pulse {
     0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+    50% { transform: scale(1.05); }
 }
 
 .auth-title {
@@ -143,6 +152,49 @@ body {
     padding: 40px 30px;
 }
 
+.tab-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #F3F4F6;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: #9CA3AF;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    color: #DC2626;
+    border-bottom-color: #DC2626;
+}
+
+.tab-btn:hover {
+    color: #DC2626;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .form-group {
     margin-bottom: 24px;
 }
@@ -159,6 +211,10 @@ body {
 
 .form-label .icon {
     font-size: 16px;
+}
+
+.form-label svg {
+    stroke: #DC2626;
 }
 
 .form-input {
@@ -189,13 +245,21 @@ body {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 18px;
     padding: 5px;
     transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.toggle-password:hover {
-    transform: translateY(-50%) scale(1.1);
+.toggle-password svg {
+    stroke: #9CA3AF;
+    transition: stroke 0.2s;
+}
+
+.toggle-password:hover svg {
+    stroke: #DC2626;
+    transform: scale(1.1);
 }
 
 .form-options {
@@ -287,8 +351,11 @@ body {
 }
 
 .btn-icon {
-    font-size: 20px;
     transition: transform 0.3s ease;
+}
+
+.btn-icon svg {
+    stroke: white;
 }
 
 .btn-auth:hover .btn-icon {
