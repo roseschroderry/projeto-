@@ -109,18 +109,20 @@ body {
 .auth-header {
     background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);
     color: white;
-    padding: 40px 30px;
+    padding: 50px 30px;
     text-align: center;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .auth-logo {
-    margin-bottom: 20px;
     animation: fadeInScale 0.8s ease-out;
 }
 
 .auth-logo img {
-    max-width: 120px;
+    max-width: 140px;
     height: auto;
     filter: brightness(0) invert(1);
 }
