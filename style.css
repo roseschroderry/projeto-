@@ -124,7 +124,6 @@ body {
 .auth-logo img {
     max-width: 140px;
     height: auto;
-    filter: brightness(0) invert(1);
 }
 
 @keyframes fadeInScale {
