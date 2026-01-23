@@ -375,7 +375,7 @@ let chatHistory = [];
 let chatSettings = {
     model: 'gpt-3.5-turbo',
     temperature: 0.7,
-    apiKey: ''
+    apiKey: localStorage.getItem('openai_api_key') || ''
 };
 
 function initChat() {
@@ -729,6 +729,45 @@ async function sendToOpenAI(message) {
         
         if (!response.ok) {
             const error = await response.json();
+            
+            // Se modelo não disponível, tenta com gpt-3.5-turbo
+            if (error.error?.code === 'model_not_found' && chatSettings.model !== 'gpt-3.5-turbo') {
+                console.log('⚠️ Modelo não disponível, tentando com gpt-3.5-turbo...');
+                chatSettings.model = 'gpt-3.5-turbo';
+                localStorage.setItem('chatSettings', JSON.stringify(chatSettings));
+                
+                // Tenta novamente com gpt-3.5-turbo
+                const retryResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${chatSettings.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-3.5-turbo',
+                        messages: messages,
+                        temperature: chatSettings.temperature,
+                        max_tokens: 1000
+                    })
+                });
+                
+                if (retryResponse.ok) {
+                    const retryData = await retryResponse.json();
+                    const aiResponse = retryData.choices[0].message.content;
+                    
+                    chatHistory = chatHistory.filter(m => m.id !== typingId);
+                    addChatMessage({
+                        sender: 'ai',
+                        text: aiResponse,
+                        time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+                    });
+                    
+                    showNotification('✅ Usando GPT-3.5 Turbo (GPT-4 não disponível)', 'info');
+                    updateAPIStatus();
+                    return;
+                }
+            }
+            
             throw new Error(error.error?.message || 'Erro na API OpenAI');
         }
         
