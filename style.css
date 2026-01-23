@@ -125,8 +125,7 @@ body {
 }
 
 .auth-logo img {
-    max-width: 280px;
-    width: 80%;
+    max-width: 200px;
     height: auto;
 }
 
