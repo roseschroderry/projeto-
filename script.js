@@ -113,7 +113,6 @@ function showMainApp() {
 
     if (currentUser.role === 'admin') {
         document.getElementById('adminSection').style.display = 'block';
-        document.getElementById('uploadSection').style.display = 'block';
     }
 
     // Atualizar perfil

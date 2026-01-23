@@ -60,14 +60,10 @@
         </div>
 
         <nav class="sidebar-nav">
-            <a href="#" class="sidebar-link active" onclick="navigateTo(event,'dashboard')">📊 Dashboard</a>
             <a href="#" class="sidebar-link" onclick="navigateTo(event,'usuarios')" id="adminSection" style="display:none">
                 👥 Usuários
             </a>
-            <a href="#" class="sidebar-link" onclick="navigateTo(event,'upload')" id="uploadSection" style="display:none">
-                📤 Upload de Arquivos
-            </a>
-            <a href="#" class="sidebar-link" onclick="navigateTo(event,'sheets')">
+            <a href="#" class="sidebar-link active" onclick="navigateTo(event,'sheets')">
                 📊 Google Sheets
             </a>
             <a href="#" class="sidebar-link" onclick="navigateTo(event,'relatorios')">📑 Relatórios</a>
@@ -79,21 +75,6 @@
 
     <!-- CONTEÚDO -->
     <main class="main-content">
-
-        <!-- DASHBOARD -->
-        <section id="dashboardSection" class="content-section">
-            <h2>📊 Dashboard</h2>
-            <div class="cards-grid">
-                <div class="card">
-                    <div class="card-title">Usuários</div>
-                    <div class="card-value" id="totalUsers">0</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Relatórios</div>
-                    <div class="card-value">Google Sheets</div>
-                </div>
-            </div>
-        </section>
 
         <!-- USUÁRIOS -->
         <section id="usuariosSection" class="content-section hidden">
@@ -122,23 +103,8 @@
             </div>
         </section>
 
-        <!-- UPLOAD DE ARQUIVOS -->
-        <section id="uploadSection" class="content-section hidden">
-            <h2>📤 Upload de Arquivos</h2>
-            <div class="upload-area">
-                <input type="file" id="fileInput" multiple style="display:none">
-                <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
-                    📁 Selecionar Arquivos
-                </button>
-                <p style="margin-top: 16px; color: #64748B;">
-                    Arraste arquivos aqui ou clique no botão acima
-                </p>
-            </div>
-            <div id="filesList" style="margin-top: 24px;"></div>
-        </section>
-
         <!-- GOOGLE SHEETS -->
-        <section id="sheetsSection" class="content-section hidden">
+        <section id="sheetsSection" class="content-section">
             <h2>📊 Google Sheets</h2>
             <div class="cards-grid" style="margin-top: 24px;">
                 <div class="card" style="cursor: pointer;" onclick="updateSheetsCards()">
