@@ -400,8 +400,9 @@ function initChat() {
                     </button>
                 </div>
                 <div class="chat-model-indicator">
-                    <span class="model-badge">${chatSettings.model}</span>
+                    <span class="model-badge" id="modelBadge">${chatSettings.model}</span>
                     <span class="temp-badge">Temp: ${chatSettings.temperature}</span>
+                    <span class="api-status-badge" id="apiStatusBadge" style="display: none;">🔑 API Ativa</span>
                 </div>
             </div>
             
@@ -493,6 +494,23 @@ function initChat() {
     `;
     
     scrollChatToBottom();
+    
+    // Atualizar indicador de API
+    updateAPIStatus();
+}
+
+function updateAPIStatus() {
+    const apiStatusBadge = document.getElementById('apiStatusBadge');
+    const modelBadge = document.getElementById('modelBadge');
+    
+    if (apiStatusBadge && chatSettings.apiKey && chatSettings.apiKey.startsWith('sk-')) {
+        apiStatusBadge.style.display = 'inline-block';
+        if (modelBadge) modelBadge.textContent = chatSettings.model;
+        console.log('✅ API OpenAI ATIVA - Usando', chatSettings.model);
+    } else {
+        if (apiStatusBadge) apiStatusBadge.style.display = 'none';
+        console.log('⚠️ API não configurada - usando respostas simuladas');
+    }
 }
 
 function renderChatMessages() {
@@ -518,6 +536,9 @@ window.sendMessage = async function() {
     
     if (!message) return;
     
+    // Recarregar configurações do localStorage antes de enviar
+    chatSettings = JSON.parse(localStorage.getItem('chatSettings') || JSON.stringify(chatSettings));
+    
     // Adicionar mensagem do usuário
     addChatMessage({
         sender: 'user',
@@ -528,8 +549,14 @@ window.sendMessage = async function() {
     input.value = '';
     input.style.height = 'auto';
     
+    // Verificar se tem chave API válida
+    const hasValidKey = chatSettings.apiKey && chatSettings.apiKey.trim().startsWith('sk-');
+    
+    console.log('🔑 Chave API:', hasValidKey ? 'Configurada' : 'Não configurada');
+    console.log('🤖 Modelo:', chatSettings.model);
+    
     // Tentar usar API real se chave estiver configurada
-    if (chatSettings.apiKey && chatSettings.apiKey.startsWith('sk-')) {
+    if (hasValidKey) {
         await sendToOpenAI(message);
     } else {
         // Fallback para resposta simulada
@@ -775,9 +802,15 @@ window.saveChatSettings = function() {
     chatSettings.temperature = parseFloat(document.getElementById('temperatureRange').value);
     
     localStorage.setItem('chatSettings', JSON.stringify(chatSettings));
+    
+    console.log('💾 Configurações salvas:');
+    console.log('  - API Key:', chatSettings.apiKey ? '✅ Configurada' : '❌ Não configurada');
+    console.log('  - Modelo:', chatSettings.model);
+    console.log('  - Temperatura:', chatSettings.temperature);
+    
     closeChatSettings();
-    initChat(); // Recarrega para atualizar indicadores
-    showNotification('✅ Configurações salvas!', 'success');
+    updateAPIStatus(); // Atualiza indicador visual
+    showNotification('✅ Configurações salvas! API OpenAI ' + (chatSettings.apiKey ? 'ATIVA' : 'não configurada'), 'success');
 };
 
 window.exportChatHistory = function() {
