@@ -512,7 +512,7 @@ function renderChatMessages() {
     `).join('');
 }
 
-window.sendMessage = function() {
+window.sendMessage = async function() {
     const input = document.getElementById('chatInput');
     const message = input.value.trim();
     
@@ -528,15 +528,20 @@ window.sendMessage = function() {
     input.value = '';
     input.style.height = 'auto';
     
-    // Simular resposta da IA
-    setTimeout(() => {
-        const response = generateAIResponse(message);
-        addChatMessage({
-            sender: 'ai',
-            text: response,
-            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-        });
-    }, 1000);
+    // Tentar usar API real se chave estiver configurada
+    if (chatSettings.apiKey && chatSettings.apiKey.startsWith('sk-')) {
+        await sendToOpenAI(message);
+    } else {
+        // Fallback para resposta simulada
+        setTimeout(() => {
+            const response = generateAIResponse(message);
+            addChatMessage({
+                sender: 'ai',
+                text: response,
+                time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+            });
+        }, 1000);
+    }
 };
 
 window.sendSuggestion = function(text) {
@@ -651,6 +656,84 @@ function generateAIResponse(userMessage) {
            `• Google Sheets 📊\n` +
            `• Geração de relatórios 📑\n\n` +
            `Como posso ser útil?`;
+}
+
+async function sendToOpenAI(message) {
+    // Adiciona mensagem de "digitando..."
+    const typingId = Date.now();
+    addChatMessage({
+        sender: 'ai',
+        text: '⏳ Pensando...',
+        time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+        id: typingId
+    });
+    
+    try {
+        // Prepara histórico de conversa para contexto
+        const messages = [
+            {
+                role: 'system',
+                content: `Você é um assistente IA profissional do sistema administrativo. Ajude com: estatísticas, usuários, uploads, planilhas Google Sheets e relatórios. Responda em português de forma clara e profissional.`
+            }
+        ];
+        
+        // Adiciona últimas 20 mensagens para contexto
+        const recentHistory = chatHistory.slice(-20).filter(m => !m.id);
+        recentHistory.forEach(msg => {
+            messages.push({
+                role: msg.sender === 'user' ? 'user' : 'assistant',
+                content: msg.text
+            });
+        });
+        
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${chatSettings.apiKey}`
+            },
+            body: JSON.stringify({
+                model: chatSettings.model,
+                messages: messages,
+                temperature: chatSettings.temperature,
+                max_tokens: 1000
+            })
+        });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error?.message || 'Erro na API OpenAI');
+        }
+        
+        const data = await response.json();
+        const aiResponse = data.choices[0].message.content;
+        
+        // Remove mensagem de "digitando..."
+        chatHistory = chatHistory.filter(m => m.id !== typingId);
+        
+        // Adiciona resposta real
+        addChatMessage({
+            sender: 'ai',
+            text: aiResponse,
+            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        });
+        
+    } catch (error) {
+        console.error('Erro OpenAI:', error);
+        
+        // Remove mensagem de "digitando..."
+        chatHistory = chatHistory.filter(m => m.id !== typingId);
+        
+        // Fallback para resposta simulada em caso de erro
+        const fallbackResponse = generateAIResponse(message);
+        addChatMessage({
+            sender: 'ai',
+            text: `⚠️ Usando modo offline (${error.message})\n\n${fallbackResponse}`,
+            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        });
+        
+        showNotification('Erro na API - usando modo offline', 'error');
+    }
 }
 
 window.handleChatKeyPress = function(event) {
