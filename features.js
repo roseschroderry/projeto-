@@ -645,20 +645,6 @@ function generateAIResponse(userMessage) {
                `Tipos disponíveis: Admin, Vendedor, User`;
     }
     
-    // Upload
-    if (msg.includes('arquivo') || msg.includes('upload') || msg.includes('enviar')) {
-        return `📤 **Upload de Arquivos:**\n\n` +
-               `Para enviar arquivos:\n` +
-               `1. Acesse "📤 Upload" no menu\n` +
-               `2. Arraste arquivos para a área indicada OU\n` +
-               `3. Clique em "📁 Selecionar Arquivos"\n\n` +
-               `Recursos:\n` +
-               `• Drag & Drop\n` +
-               `• Múltiplos arquivos\n` +
-               `• Visualização com detalhes\n` +
-               `• Gerenciamento completo`;
-    }
-    
     // Google Sheets
     if (msg.includes('planilha') || msg.includes('sheets') || msg.includes('google')) {
         return `📊 **Google Sheets:**\n\n` +
@@ -825,7 +811,6 @@ function generateAIResponse(userMessage) {
                `• atalhos - Teclas rápidas\n\n` +
                `📤 **Ações:**\n` +
                `• usuários - Gerenciar usuários\n` +
-               `• upload - Enviar arquivos\n` +
                `• planilhas - Google Sheets\n` +
                `• relatórios - Gerar relatórios\n` +
                `• exportar - Baixar dados\n` +
@@ -838,7 +823,6 @@ function generateAIResponse(userMessage) {
            `Posso ajudar com:\n` +
            `• Estatísticas do sistema 📊\n` +
            `• Gerenciamento de usuários 👥\n` +
-           `• Upload de arquivos 📤\n` +
            `• Google Sheets 📊\n` +
            `• Geração de relatórios 📑\n\n` +
            `Como posso ser útil?`;
