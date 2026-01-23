@@ -63,11 +63,11 @@
             <a href="#" class="sidebar-link" onclick="navigateTo(event,'usuarios')" id="adminSection" style="display:none">
                 👥 Usuários
             </a>
-            <a href="#" class="sidebar-link active" onclick="navigateTo(event,'sheets')">
+            <a href="#" class="sidebar-link" onclick="navigateTo(event,'sheets')">
                 📊 Google Sheets
             </a>
             <a href="#" class="sidebar-link" onclick="navigateTo(event,'relatorios')">📑 Relatórios</a>
-            <a href="#" class="sidebar-link" onclick="navigateTo(event,'chat')">💬 Chat IA</a>
+            <a href="#" class="sidebar-link active" onclick="navigateTo(event,'chat')">💬 Chat IA</a>
             <a href="#" class="sidebar-link" onclick="navigateTo(event,'perfil')">👤 Meu Perfil</a>
             <a href="#" class="sidebar-link" onclick="location.reload()">🚪 Sair</a>
         </nav>
@@ -104,7 +104,7 @@
         </section>
 
         <!-- GOOGLE SHEETS -->
-        <section id="sheetsSection" class="content-section">
+        <section id="sheetsSection" class="content-section hidden">
             <h2>📊 Google Sheets</h2>
             <div class="cards-grid" style="margin-top: 24px;">
                 <div class="card" style="cursor: pointer;" onclick="updateSheetsCards()">
@@ -122,7 +122,7 @@
         </section>
 
         <!-- CHAT IA -->
-        <section id="chatSection" class="content-section hidden">
+        <section id="chatSection" class="content-section">
             <h2>💬 Chat com Inteligência Artificial</h2>
             <div id="chatContainer"></div>
         </section>
