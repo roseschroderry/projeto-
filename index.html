@@ -16,121 +16,56 @@
 
 <body>
 
-<!-- ================= LOGIN / AUTH =================  -->
-<div id="authPage" class="auth-page">
-    <div class="auth-container">
-        <div class="auth-header">
-            <div class="auth-logo">
-                <img src="https://i.imgur.com/20qFKr1.png" alt="Sistema Premium Logo">
-            </div>
+<script>
+alert('✅ HTML carregado! Se você vê esta mensagem, o arquivo está funcionando.');
+console.log('✅ TESTE: Página index.html carregada com sucesso!');
+</script>
+
+<!-- TELA DE BOAS-VINDAS ATAQ -->
+<div id="welcomeScreen" class="welcome-screen" style="display: flex;">
+    <div class="welcome-content">
+        <div style="width: 120px; height: 120px; background: #DC2626; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 48px; font-weight: 800; margin: 0 auto 30px; box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);">
+            A
         </div>
+        <h1>Seja bem-vindo à <span>ATAQ</span></h1>
+        <p>Distribuição e Logística</p>
+    </div>
+</div>
 
-        <div class="auth-body">
-            <div class="tab-buttons">
-                <button class="tab-btn active" onclick="switchAuthTab('login')">Login</button>
-                <button class="tab-btn" onclick="switchAuthTab('register')">Registrar</button>
+<!-- ================= LOGIN / AUTH =================  -->
+<div id="authPage" class="login-page">
+    <div class="login-left">
+        <div class="login-brand">
+            <div style="width: 100px; height: 100px; background: #DC2626; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 42px; font-weight: 800; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);">
+                A
             </div>
 
-            <!-- LOGIN TAB -->
-            <div id="loginForm" class="tab-content active">
-                <div class="form-group">
-                    <label class="form-label">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                            <polyline points="22,6 12,13 2,6"></polyline>
-                        </svg>
-                        Email
-                    </label>
-                    <input type="email" id="loginEmail" class="form-input" placeholder="seu@email.com" autocomplete="email">
-                </div>
+            <h1>ATAQ</h1>
+            <p class="subtitle">Distribuição e Logística</p>
 
-                <div class="form-group">
-                    <label class="form-label">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                        Senha
-                    </label>
-                    <div class="password-wrapper">
-                        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" autocomplete="current-password">
-                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('loginPassword')">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+            <ul>
+                <li>Segurança operacional</li>
+                <li>Controle em tempo real</li>
+                <li>Gestão inteligente</li>
+            </ul>
+        </div>
+    </div>
 
-                <div class="form-options">
-                    <label class="checkbox-modern">
-                        <input type="checkbox" id="rememberMe">
-                        <span class="checkmark"></span>
-                        <span class="checkbox-label">Manter conectado</span>
-                    </label>
-                </div>
+    <div class="login-right">
+        <div class="login-card">
+            <h2>Acessar plataforma</h2>
 
-                <button id="loginBtn" class="btn-auth" onclick="doLogin()">
-                    <span class="btn-text">Entrar no Sistema</span>
-                    <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                        <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                </button>
-            </div>
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Senha">
 
-            <!-- REGISTER TAB -->
-            <div id="registerForm" class="tab-content" style="display: none;">
-                <div class="form-group">
-                    <label class="form-label">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                        Nome Completo
-                    </label>
-                    <input type="text" id="registerName" class="form-input" placeholder="Seu nome completo">
-                </div>
+            <label class="remember">
+                <input type="checkbox" id="rememberMe">
+                Lembrar-me
+            </label>
 
-                <div class="form-group">
-                    <label class="form-label">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                            <polyline points="22,6 12,13 2,6"></polyline>
-                        </svg>
-                        Email
-                    </label>
-                    <input type="email" id="registerEmail" class="form-input" placeholder="seu@email.com">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                        Senha
-                    </label>
-                    <div class="password-wrapper">
-                        <input type="password" id="registerPassword" class="form-input" placeholder="Mínimo 6 caracteres">
-                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('registerPassword')">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <button class="btn-auth" onclick="doRegister()">
-                    <span class="btn-text">Criar Conta</span>
-                    <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                        <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                </button>
-            </div>
+            <button id="loginBtn" class="login-btn" onclick="doLogin()">
+                Entrar
+            </button>
         </div>
     </div>
 </div>
@@ -156,6 +91,9 @@
         </div>
 
         <nav class="sidebar-nav">
+            <a href="#" class="sidebar-link active" onclick="navigateTo(event,'dashboard')">
+                📊 Dashboard
+            </a>
             <a href="#" class="sidebar-link" onclick="navigateTo(event,'usuarios')" id="adminSection" style="display:none">
                 👥 Usuários
             </a>
@@ -163,7 +101,7 @@
                 📊 Google Sheets
             </a>
             <a href="#" class="sidebar-link" onclick="navigateTo(event,'relatorios')">📑 Relatórios</a>
-            <a href="#" class="sidebar-link active" onclick="navigateTo(event,'chat')">💬 Chat IA</a>
+            <a href="#" class="sidebar-link" onclick="navigateTo(event,'chat')">💬 Chat IA</a>
             <a href="#" class="sidebar-link" onclick="navigateTo(event,'perfil')">👤 Meu Perfil</a>
             <a href="#" class="sidebar-link" onclick="location.reload()">🚪 Sair</a>
         </nav>
@@ -171,6 +109,41 @@
 
     <!-- CONTEÚDO -->
     <main class="main-content">
+
+        <!-- DASHBOARD -->
+        <section id="dashboardSection" class="content-section">
+            <h1 class="dashboard-title">Visão Geral</h1>
+
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <span>Usuários Ativos</span>
+                    <strong>128</strong>
+                </div>
+
+                <div class="kpi-card">
+                    <span>Relatórios Hoje</span>
+                    <strong>18</strong>
+                </div>
+
+                <div class="kpi-card">
+                    <span>Exportações</span>
+                    <strong>42</strong>
+                </div>
+
+                <div class="kpi-card">
+                    <span>Última Atualização</span>
+                    <strong>10:31</strong>
+                </div>
+            </div>
+
+            <div class="alert-box">
+                <h3>⚠️ Atenção Operacional</h3>
+                <ul>
+                    <li>2 relatórios estão desatualizados</li>
+                    <li>1 usuário sem permissão definida</li>
+                </ul>
+            </div>
+        </section>
 
         <!-- USUÁRIOS -->
         <section id="usuariosSection" class="content-section hidden">
@@ -218,7 +191,7 @@
         </section>
 
         <!-- CHAT IA -->
-        <section id="chatSection" class="content-section">
+        <section id="chatSection" class="content-section hidden">
             <h2>💬 Chat com Inteligência Artificial</h2>
             <div id="chatContainer"></div>
         </section>
@@ -248,7 +221,56 @@
     </main>
 </div>
 
+<!-- CHATBOT ATAQ -->
+<div id="chatbot">
+    <button id="chatbotToggle">Assistente ATAQ</button>
+
+    <div id="chatbotWindow">
+        <div class="chat-header">
+            <strong>Assistente ATAQ</strong>
+            <span id="chatClose">×</span>
+        </div>
+
+        <div id="chatMessages"></div>
+
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Digite sua solicitação">
+            <button id="chatSend">Enviar</button>
+        </div>
+    </div>
+</div>
+
 <!-- JS -->
+<script>
+// TELA DE BOAS-VINDAS - SCRIPT INLINE PARA GARANTIR EXECUÇÃO
+console.log('🔵 Script de boas-vindas iniciado');
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔵 DOM carregado');
+    
+    const welcome = document.getElementById('welcomeScreen');
+    
+    if (welcome) {
+        console.log('✅ Elemento welcomeScreen encontrado!');
+        console.log('📊 Display:', window.getComputedStyle(welcome).display);
+        console.log('📊 Z-index:', window.getComputedStyle(welcome).zIndex);
+        console.log('📊 Visibility:', window.getComputedStyle(welcome).visibility);
+        
+        setTimeout(() => {
+            console.log('⏱️ Iniciando fade-out...');
+            welcome.classList.add('fade-out');
+            
+            setTimeout(() => {
+                welcome.remove();
+                console.log('✅ Tela de boas-vindas removida');
+            }, 600);
+        }, 2000);
+    } else {
+        console.error('❌ Elemento welcomeScreen NÃO encontrado!');
+        console.log('📋 Elementos no body:', document.body.children);
+    }
+});
+</script>
 <script src="script.js" defer></script>
 <script src="features.js" defer></script>
 

@@ -333,3 +333,112 @@ window.closeMobileMenu = function () {
     document.getElementById('sidebar').classList.remove('mobile-open');
     document.getElementById('mobileOverlay').classList.remove('active');
 };
+
+/* ==================================================
+   CHATBOT ATAQ
+================================================== */
+
+const chatbotToggle = document.getElementById('chatbotToggle');
+const chatbotWindow = document.getElementById('chatbotWindow');
+const chatClose = document.getElementById('chatClose');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const chatSend = document.getElementById('chatSend');
+
+chatbotToggle.onclick = () => chatbotWindow.style.display = 'block';
+chatClose.onclick = () => chatbotWindow.style.display = 'none';
+
+function addMessage(text, fromBot = false) {
+    const msg = document.createElement('div');
+    msg.textContent = text;
+    msg.style.marginBottom = '10px';
+    msg.style.color = fromBot ? '#0F172A' : '#DC2626';
+    chatMessages.appendChild(msg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+addMessage(
+    'Olá. Sou o Assistente ATAQ. Posso ajudar com relatórios, usuários, status do sistema ou exportações.',
+    true
+);
+
+chatSend.onclick = () => {
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    addMessage(text);
+    chatInput.value = '';
+
+    setTimeout(() => {
+        const response = handleChatCommand(text);
+        addMessage(response, true);
+    }, 600);
+};
+
+// Comandos específicos do chatbot
+function handleChatCommand(text) {
+    const msg = text.toLowerCase();
+
+    // Comandos Google Sheets
+    if (msg.includes('planilha') || msg.includes('sheet')) {
+        const sheets = JSON.parse(localStorage.getItem('connectedSheets') || '[]');
+        
+        if (msg.includes('conectar') || msg.includes('adicionar')) {
+            connectGoogleSheet();
+            return 'Iniciando conexão com Google Sheets...';
+        }
+        
+        if (msg.includes('abrir') || msg.includes('visualizar')) {
+            if (sheets.length === 0) {
+                return 'Nenhuma planilha conectada. Use "conectar planilha" primeiro.';
+            }
+            // Abrir a primeira planilha
+            window.open(sheets[0].url, '_blank');
+            return `Abrindo planilha "${sheets[0].name}"...`;
+        }
+        
+        if (msg.includes('listar') || msg.includes('mostrar')) {
+            if (sheets.length === 0) {
+                return 'Nenhuma planilha conectada. Use "conectar planilha" para adicionar uma.';
+            }
+            const list = sheets.map((s, i) => `${i + 1}. ${s.name} (${s.rows} linhas)`).join('\n');
+            return `Planilhas conectadas:\n${list}\n\nUse "abrir planilha" para visualizar.`;
+        }
+        
+        if (msg.includes('sincronizar') || msg.includes('atualizar')) {
+            if (sheets.length === 0) {
+                return 'Nenhuma planilha para sincronizar.';
+            }
+            syncSheet(sheets[0].id);
+            return 'Sincronizando planilhas...';
+        }
+        
+        return `Comandos disponíveis para planilhas:\n• "conectar planilha" - Adicionar nova planilha\n• "listar planilhas" - Ver planilhas conectadas\n• "abrir planilha" - Abrir no Google Sheets\n• "sincronizar planilhas" - Atualizar dados`;
+    }
+
+    // Comandos de Relatórios
+    if (msg.includes('relatorio') || msg.includes('relatório')) {
+        return 'Acesse a seção "📑 Relatórios" no menu lateral para gerar e visualizar relatórios do sistema.';
+    }
+
+    // Comandos de Usuários
+    if (msg.includes('usuario') || msg.includes('usuário')) {
+        if (currentUser && currentUser.role === 'admin') {
+            return 'Acesse "👥 Usuários" no menu para gerenciar usuários do sistema (adicionar, editar, remover).';
+        }
+        return 'Apenas administradores podem gerenciar usuários.';
+    }
+
+    // Comandos Dashboard
+    if (msg.includes('dashboard') || msg.includes('visão geral')) {
+        return 'Acesse "📊 Dashboard" no menu para visualizar estatísticas e KPIs do sistema.';
+    }
+
+    // Ajuda
+    if (msg.includes('ajuda') || msg.includes('help')) {
+        return `Comandos disponíveis:\n• Planilhas: conectar, listar, sincronizar\n• Navegação: dashboard, relatórios, usuários\n• Pergunte sobre qualquer funcionalidade!`;
+    }
+
+    // Resposta padrão
+    return 'Solicitação recebida. Em breve retornarei com a informação.';
+}
